@@ -1,0 +1,54 @@
+[project]
+name = "pysec"
+version = "0.1.0"
+description = "Python Security Scanner MVP - SAST with Bandit"
+authors = [{name = "@user", email = "user@example.com"}]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+dependencies = [
+    "typer[all]>=0.20.0",
+    "bandit>=1.8.6",
+    "rich>=13.9.0",
+    "pydantic>=2.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-cov>=6.0.0",
+    "mypy>=1.14.0",
+    "ruff>=0.8.4",
+]
+
+[project.scripts]
+pysec = "pysec.cli.commands:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "--cov=src/pysec --cov-report=html --cov-report=term-missing --cov-fail-under=85 -v"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+strict = true
+exclude = ["tests/fixtures"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "B", "C4", "UP"]
+ignore = ["E501"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
