@@ -12,9 +12,33 @@ THE_SECRET_FLAG = "FLAG{LLM_Pwn3d_bY_mE_!}"
 # Claude API 클라이언트 초기화
 def get_anthropic_client():
     api_key = os.getenv("ANTHROPIC_API_KEY")
+
     if not api_key:
-        st.error("ANTHROPIC_API_KEY가 설정되지 않았습니다. .env 파일을 확인하세요.")
+        st.error("❌ ANTHROPIC_API_KEY가 설정되지 않았습니다!")
+        st.info("""
+        **API 키 설정 방법:**
+
+        1. `.env` 파일을 프로젝트 루트에 생성하세요
+        2. 다음 내용을 추가하세요:
+        ```
+        ANTHROPIC_API_KEY=sk-ant-api03-...
+        ```
+        3. API 키는 https://console.anthropic.com/ 에서 발급받을 수 있습니다
+        4. 애플리케이션을 재시작하세요
+        """)
         st.stop()
+
+    # API 키 형식 검증
+    if not api_key.startswith("sk-ant-"):
+        st.error("❌ API 키 형식이 올바르지 않습니다!")
+        st.warning(f"현재 키: {api_key[:20]}... (잘못된 형식)")
+        st.info("""
+        **올바른 API 키 형식:**
+        - `sk-ant-api03-...` 로 시작해야 합니다
+        - https://console.anthropic.com/ 에서 새 키를 발급받으세요
+        """)
+        st.stop()
+
     return anthropic.Anthropic(api_key=api_key)
 
 # 다양한 난이도의 시스템 프롬프트
@@ -106,8 +130,28 @@ def get_ai_response(user_message: str, difficulty: str, conversation_history: li
 
         return response.content[0].text
 
+    except anthropic.AuthenticationError as e:
+        return """❌ **API 키 인증 실패**
+
+**문제:** API 키가 유효하지 않습니다.
+
+**해결 방법:**
+1. https://console.anthropic.com/settings/keys 로 이동
+2. 새로운 API 키를 생성하거나 기존 키를 확인
+3. `.env` 파일에 올바른 키를 설정:
+   ```
+   ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+   ```
+4. 애플리케이션을 재시작하세요
+
+**참고:** API 키는 절대 공개하지 마세요!
+"""
+    except anthropic.RateLimitError as e:
+        return "⚠️ **API 호출 한도 초과**: 잠시 후 다시 시도해주세요."
+    except anthropic.APIError as e:
+        return f"❌ **API 오류**: {str(e)}\n\n문제가 지속되면 API 키와 인터넷 연결을 확인하세요."
     except Exception as e:
-        return f"오류가 발생했습니다: {str(e)}"
+        return f"❌ **예상치 못한 오류**: {str(e)}"
 
 def main():
     st.set_page_config(

@@ -43,17 +43,32 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. 환경 변수 설정
+### 4. 환경 변수 설정 ⚠️ 중요!
+
+#### 4-1. API 키 발급
+1. [Anthropic Console](https://console.anthropic.com/)에 접속
+2. 로그인 또는 계정 생성
+3. [Settings > API Keys](https://console.anthropic.com/settings/keys)로 이동
+4. "Create Key" 버튼 클릭
+5. API 키를 복사 (한 번만 표시됩니다!)
+
+#### 4-2. .env 파일 생성
 ```bash
 cp .env.example .env
 ```
 
-`.env` 파일을 열고 Anthropic API 키를 입력하세요:
-```
-ANTHROPIC_API_KEY=your_actual_api_key_here
+#### 4-3. API 키 설정
+`.env` 파일을 텍스트 에디터로 열고 발급받은 API 키를 입력하세요:
+
+```bash
+# .env 파일 내용
+ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-API 키는 [Anthropic Console](https://console.anthropic.com/)에서 발급받을 수 있습니다.
+**주의사항:**
+- API 키는 `sk-ant-` 로 시작해야 합니다
+- 키를 절대 공개 저장소에 커밋하지 마세요
+- `.env` 파일은 `.gitignore`에 포함되어 있습니다
 
 ### 5. 애플리케이션 실행
 ```bash
@@ -200,6 +215,57 @@ streamlit run app.py
 
 - FLAG 값 `FLAG{LLM_Pwn3d_bY_mE_!}`를 챗봇 응답에서 획득
 - 응답에 FLAG가 포함되면 자동으로 축하 메시지가 표시됩니다
+
+## 🔧 문제 해결 (Troubleshooting)
+
+### ❌ `Error code: 401 - authentication_error`
+
+**원인:** API 키가 설정되지 않았거나 유효하지 않습니다.
+
+**해결 방법:**
+1. `.env` 파일이 프로젝트 루트에 존재하는지 확인
+2. API 키가 `sk-ant-` 로 시작하는지 확인
+3. [Anthropic Console](https://console.anthropic.com/settings/keys)에서 새 키 발급
+4. `.env` 파일을 다음과 같이 수정:
+   ```bash
+   ANTHROPIC_API_KEY=sk-ant-api03-your-actual-key-here
+   ```
+5. 애플리케이션 재시작
+
+### ❌ `TypeError: Client.__init__() got an unexpected keyword argument`
+
+**원인:** anthropic 라이브러리 버전이 오래되었습니다.
+
+**해결 방법:**
+```bash
+pip uninstall anthropic -y
+pip install -r requirements.txt
+```
+
+### ❌ `.env` 파일을 읽을 수 없음
+
+**원인:** 파일 경로 또는 권한 문제
+
+**해결 방법:**
+```bash
+# 현재 디렉토리 확인
+pwd
+
+# .env 파일 확인
+ls -la .env
+
+# 파일이 없으면 생성
+cp .env.example .env
+```
+
+### ⚠️ API 호출 한도 초과
+
+**원인:** 무료 티어 또는 월간 한도 초과
+
+**해결 방법:**
+1. [Anthropic Console](https://console.anthropic.com/settings/limits)에서 사용량 확인
+2. 잠시 후 다시 시도
+3. 필요시 유료 플랜으로 업그레이드
 
 ## 📚 추가 학습 자료
 
