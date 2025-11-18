@@ -121,8 +121,9 @@ def get_ai_response(user_message: str, difficulty: str, conversation_history: li
 
     try:
         # Claude API 호출
+        # 사용 가능한 모델: claude-3-5-sonnet-20240620, claude-3-opus-20240229, claude-3-sonnet-20240229
         response = client.messages.create(
-            model="claude-3-5-sonnet-20241022",
+            model="claude-3-5-sonnet-20240620",
             max_tokens=1024,
             system=system_prompt,
             messages=messages
@@ -145,6 +146,20 @@ def get_ai_response(user_message: str, difficulty: str, conversation_history: li
 4. 애플리케이션을 재시작하세요
 
 **참고:** API 키는 절대 공개하지 마세요!
+"""
+    except anthropic.NotFoundError as e:
+        return """❌ **모델을 찾을 수 없음**
+
+**문제:** 요청한 Claude 모델에 접근할 수 없습니다.
+
+**가능한 원인:**
+- API 키에 해당 모델 사용 권한이 없음
+- 모델 이름이 잘못되었거나 더 이상 사용할 수 없음
+
+**해결 방법:**
+1. API 키의 권한을 확인하세요
+2. 최신 모델 목록을 확인: https://docs.anthropic.com/claude/docs/models-overview
+3. 필요시 관리자에게 문의하세요
 """
     except anthropic.RateLimitError as e:
         return "⚠️ **API 호출 한도 초과**: 잠시 후 다시 시도해주세요."

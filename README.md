@@ -242,6 +242,23 @@ pip uninstall anthropic -y
 pip install -r requirements.txt
 ```
 
+### ❌ `Error code: 404 - not_found_error` (모델을 찾을 수 없음)
+
+**원인:** 요청한 모델이 존재하지 않거나 API 키에 접근 권한이 없습니다.
+
+**해결 방법:**
+1. 현재 사용 중인 모델: `claude-3-5-sonnet-20240620`
+2. API 키가 Claude 3.5 Sonnet 모델에 접근할 수 있는지 확인
+3. [Anthropic Console](https://console.anthropic.com/settings/limits)에서 사용 가능한 모델 확인
+4. 다른 모델로 변경하려면 `app.py` 126번 라인 수정:
+   ```python
+   # 사용 가능한 모델 예시:
+   model="claude-3-5-sonnet-20240620"  # 권장
+   model="claude-3-opus-20240229"      # 더 강력한 모델
+   model="claude-3-sonnet-20240229"    # 기본 모델
+   model="claude-3-haiku-20240307"     # 빠른 모델
+   ```
+
 ### ❌ `.env` 파일을 읽을 수 없음
 
 **원인:** 파일 경로 또는 권한 문제
