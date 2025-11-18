@@ -66,7 +66,7 @@ class TestSeverityPieChart:
         })
 
         fig = create_severity_pie_chart(df)
-        assert "Severity" in fig.layout.title.text or "severity" in fig.layout.title.text.lower()
+        assert "심각도" in fig.layout.title.text or "분포" in fig.layout.title.text
 
 
 class TestConfidencePieChart:
@@ -101,7 +101,7 @@ class TestConfidencePieChart:
         })
 
         fig = create_confidence_pie_chart(df)
-        assert "Confidence" in fig.layout.title.text or "confidence" in fig.layout.title.text.lower()
+        assert "신뢰도" in fig.layout.title.text or "분포" in fig.layout.title.text
 
 
 class TestOWASPBarChart:

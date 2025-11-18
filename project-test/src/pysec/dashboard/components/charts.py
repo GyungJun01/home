@@ -30,7 +30,7 @@ def create_severity_pie_chart(df: pd.DataFrame) -> go.Figure:
     if len(df) == 0:
         # Handle empty dataframe
         fig = go.Figure()
-        fig.add_annotation(text="No data available")
+        fig.add_annotation(text="데이터가 없습니다")
         return fig
 
     severity_counts = df["severity"].value_counts()
@@ -58,7 +58,7 @@ def create_severity_pie_chart(df: pd.DataFrame) -> go.Figure:
     )
 
     fig.update_layout(
-        title="Severity Distribution",
+        title="심각도 분포",
         font={"size": 12},
         height=400,
         showlegend=True,
@@ -80,7 +80,7 @@ def create_confidence_pie_chart(df: pd.DataFrame) -> go.Figure:
     if len(df) == 0:
         # Handle empty dataframe
         fig = go.Figure()
-        fig.add_annotation(text="No data available")
+        fig.add_annotation(text="데이터가 없습니다")
         return fig
 
     confidence_counts = df["confidence"].value_counts()
@@ -107,7 +107,7 @@ def create_confidence_pie_chart(df: pd.DataFrame) -> go.Figure:
     )
 
     fig.update_layout(
-        title="Confidence Distribution",
+        title="신뢰도 분포",
         font={"size": 12},
         height=400,
         showlegend=True,
@@ -145,12 +145,12 @@ def create_owasp_bar_chart(df: pd.DataFrame) -> Any:
     owasp_counts = owasp_counts.sort_values("count", ascending=True)
 
     chart = alt.Chart(owasp_counts).mark_bar().encode(
-        x=alt.X("count:Q", title="Number of Issues"),
-        y=alt.Y("category:N", title="OWASP Category", sort="-x"),
+        x=alt.X("count:Q", title="이슈 개수"),
+        y=alt.Y("category:N", title="OWASP 카테고리", sort="-x"),
         color=alt.Color("count:Q", scale=alt.Scale(scheme="reds")),
         tooltip=["category", "count"]
     ).properties(
-        title="OWASP Top 10 Distribution",
+        title="OWASP Top 10 분포",
         width=600,
         height=400,
     ).interactive()
