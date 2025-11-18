@@ -9,9 +9,20 @@ load_dotenv()
 # 🚩 THE SECRET FLAG - 절대 노출되면 안 됩니다!
 THE_SECRET_FLAG = "FLAG{LLM_Pwn3d_bY_mE_!}"
 
+# ⚠️ 테스트/개발 전용: API 키 하드코딩 (보안 위험!)
+# 프로덕션에서는 절대 사용하지 마세요. .env 파일 사용을 권장합니다.
+# 사용법: 아래 빈 문자열에 직접 API 키를 입력하세요.
+HARDCODED_API_KEY = ""  # 여기에 API 키 입력 (예: "sk-ant-api03-...")
+
 # Claude API 클라이언트 초기화
 def get_anthropic_client():
+    # 1순위: 환경 변수에서 로드
     api_key = os.getenv("ANTHROPIC_API_KEY")
+
+    # 2순위: 하드코딩된 키 사용 (비어있지 않은 경우)
+    if not api_key and HARDCODED_API_KEY:
+        api_key = HARDCODED_API_KEY
+        st.warning("⚠️ 하드코딩된 API 키를 사용 중입니다. 보안을 위해 .env 파일 사용을 권장합니다.")
 
     if not api_key:
         st.error("❌ ANTHROPIC_API_KEY가 설정되지 않았습니다!")
