@@ -16,41 +16,71 @@ HARDCODED_API_KEY = ""  # 여기에 API 키 입력 (예: "sk-ant-api03-...")
 
 # Claude API 클라이언트 초기화
 def get_anthropic_client():
-    # 1순위: 환경 변수에서 로드
-    api_key = os.getenv("ANTHROPIC_API_KEY")
+    """
+    Anthropic API 클라이언트를 초기화합니다.
 
-    # 2순위: 하드코딩된 키 사용 (비어있지 않은 경우)
-    if not api_key and HARDCODED_API_KEY:
-        api_key = HARDCODED_API_KEY
+    API 키 로드 우선순위:
+    1. 환경 변수 (ANTHROPIC_API_KEY)
+    2. 하드코딩된 키 (HARDCODED_API_KEY)
+
+    Returns:
+        anthropic.Anthropic: 초기화된 API 클라이언트
+
+    Raises:
+        SystemExit: API 키가 없거나 형식이 잘못된 경우
+    """
+    # API 키 로드 (우선순위: 환경 변수 > 하드코딩)
+    api_key = os.getenv("ANTHROPIC_API_KEY") or HARDCODED_API_KEY
+
+    # 하드코딩 키 사용 시 경고
+    if api_key == HARDCODED_API_KEY and HARDCODED_API_KEY:
         st.warning("⚠️ 하드코딩된 API 키를 사용 중입니다. 보안을 위해 .env 파일 사용을 권장합니다.")
 
+    # API 키 존재 확인
     if not api_key:
         st.error("❌ ANTHROPIC_API_KEY가 설정되지 않았습니다!")
         st.info("""
-        **API 키 설정 방법:**
+        **API 키 설정 방법 (2가지 중 선택):**
 
-        1. `.env` 파일을 프로젝트 루트에 생성하세요
-        2. 다음 내용을 추가하세요:
+        **방법 1: 하드코딩 (빠른 테스트용)**
+        - `app.py` 파일 15번 라인 수정:
+        ```python
+        HARDCODED_API_KEY = "sk-ant-api03-your-key-here"
         ```
-        ANTHROPIC_API_KEY=sk-ant-api03-...
+
+        **방법 2: .env 파일 (권장)**
+        1. `.env` 파일을 프로젝트 루트에 생성
+        2. 다음 내용 추가:
         ```
-        3. API 키는 https://console.anthropic.com/ 에서 발급받을 수 있습니다
-        4. 애플리케이션을 재시작하세요
+        ANTHROPIC_API_KEY=sk-ant-api03-your-key-here
+        ```
+        3. 애플리케이션 재시작
+
+        **API 키 발급:** https://console.anthropic.com/settings/keys
         """)
         st.stop()
 
     # API 키 형식 검증
     if not api_key.startswith("sk-ant-"):
         st.error("❌ API 키 형식이 올바르지 않습니다!")
-        st.warning(f"현재 키: {api_key[:20]}... (잘못된 형식)")
+        st.warning(f"현재 키: `{api_key[:20]}...` (잘못된 형식)")
         st.info("""
         **올바른 API 키 형식:**
-        - `sk-ant-api03-...` 로 시작해야 합니다
-        - https://console.anthropic.com/ 에서 새 키를 발급받으세요
+        - 반드시 `sk-ant-` 로 시작해야 합니다
+        - 예시: `sk-ant-api03-xxxxxxxxxxxxx...`
+
+        **새 키 발급:** https://console.anthropic.com/settings/keys
         """)
         st.stop()
 
-    return anthropic.Anthropic(api_key=api_key)
+    # 클라이언트 생성 및 반환
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        return client
+    except Exception as e:
+        st.error(f"❌ API 클라이언트 초기화 실패: {str(e)}")
+        st.info("API 키를 다시 확인하고 재시도하세요.")
+        st.stop()
 
 # 다양한 난이도의 시스템 프롬프트
 SYSTEM_PROMPTS = {
