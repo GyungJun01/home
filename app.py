@@ -121,9 +121,9 @@ def get_ai_response(user_message: str, difficulty: str, conversation_history: li
 
     try:
         # Claude API 호출
-        # 사용 가능한 모델: claude-3-5-sonnet-20240620, claude-3-opus-20240229, claude-3-sonnet-20240229
+        # 범용 모델 사용 (대부분의 API 키에서 접근 가능)
         response = client.messages.create(
-            model="claude-3-5-sonnet-20240620",
+            model="claude-3-haiku-20240307",
             max_tokens=1024,
             system=system_prompt,
             messages=messages

@@ -22,7 +22,24 @@ OWASP LLM Top 10의 1순위 취약점인 **프롬프트 인젝션(Prompt Injecti
 
 - **Frontend/Backend**: Streamlit (Python)
 - **LLM**: Claude API (Anthropic)
+- **모델**: Claude 3 Haiku (빠르고 안정적)
 - **언어**: Python 3.8+
+
+## 📁 프로젝트 구조
+
+```
+.
+├── app.py              # 메인 Streamlit 애플리케이션
+├── requirements.txt    # Python 의존성 패키지
+├── models.txt          # 사용 가능한 모든 Claude 모델 목록 📋
+├── .env.example        # 환경 변수 템플릿
+├── .env                # 실제 API 키 (생성 필요, .gitignore에 포함)
+├── .gitignore          # Git 제외 파일
+└── README.md           # 프로젝트 문서
+```
+
+**중요 파일:**
+- `models.txt`: Claude 3, 3.5, 4 시리즈 모든 모델 정보 및 사용 가이드
 
 ## 📦 설치 방법
 
@@ -246,18 +263,24 @@ pip install -r requirements.txt
 
 **원인:** 요청한 모델이 존재하지 않거나 API 키에 접근 권한이 없습니다.
 
+**현재 사용 중인 모델:**
+- `claude-3-haiku-20240307` (가장 안정적이고 범용적)
+- 대부분의 API 키에서 접근 가능
+- 빠르고 저렴한 모델
+
 **해결 방법:**
-1. 현재 사용 중인 모델: `claude-3-5-sonnet-20240620`
-2. API 키가 Claude 3.5 Sonnet 모델에 접근할 수 있는지 확인
-3. [Anthropic Console](https://console.anthropic.com/settings/limits)에서 사용 가능한 모델 확인
-4. 다른 모델로 변경하려면 `app.py` 126번 라인 수정:
+1. API 키 권한 확인: [Anthropic Console](https://console.anthropic.com/settings/limits)
+2. 현재 설정된 모델이 작동하지 않으면 `app.py` 126번 라인 수정:
    ```python
-   # 사용 가능한 모델 예시:
-   model="claude-3-5-sonnet-20240620"  # 권장
-   model="claude-3-opus-20240229"      # 더 강력한 모델
-   model="claude-3-sonnet-20240229"    # 기본 모델
-   model="claude-3-haiku-20240307"     # 빠른 모델
+   # 안정성 순서 (위에서 아래로 시도)
+   model="claude-3-haiku-20240307"     # 현재 설정 (가장 안정적)
+   model="claude-3-sonnet-20240229"    # 더 나은 성능
+   model="claude-3-opus-20240229"      # 최고 성능 (비용 높음)
    ```
+3. **전체 모델 목록 확인**: `models.txt` 파일 참조
+   - Claude 3, 3.5, 4 시리즈 모든 모델 정보
+   - 각 모델의 특징과 가격 비교
+   - 모델 변경 가이드
 
 ### ❌ `.env` 파일을 읽을 수 없음
 
